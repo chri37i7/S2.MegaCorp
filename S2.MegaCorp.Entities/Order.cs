@@ -4,9 +4,9 @@ namespace S2.MegaCorp.Entities
 {
     public class Order
     {
-        int id;
-        DateTime orderDate;
-        DateTime shipmentDate;
+        protected int id;
+        protected DateTime orderDate;
+        protected DateTime shipmentDate;
 
         public Order(int id, DateTime orderDate, DateTime shipmentDate)
         {
@@ -14,66 +14,116 @@ namespace S2.MegaCorp.Entities
             OrderDate = orderDate;
             ShipmentDate = shipmentDate;
 
-            (bool datesAreValid, string message) datesValidationresult = ValidateDates(orderDate, shipmentDate);
-            if(!datesValidationresult.datesAreValid)
+            (bool datesAreValid, string message) = ValidateDates(orderDate, shipmentDate);
+            if(!datesAreValid)
             {
-                throw new ArgumentException(datesValidationresult.message);
+                throw new ArgumentException(message);
             }
-
         }
 
-        public int Id
+        public virtual int Id
         {
             get
             {
                 return id;
             }
-
             set
             {
-                id = value;
+                if(id != value)
+                {
+                    id = value;
+                }
             }
         }
 
-        public DateTime OrderDate
+        public virtual DateTime OrderDate
         {
             get
             {
                 return orderDate;
             }
-
             set
             {
-                if(shipmentDate != default)
+                if(orderDate != default)
                 {
-                    (bool datesAreValid, string message) datesValidationresult = ValidateDates(orderDate, shipmentDate);
-                    if(!datesValidationresult.datesAreValid)
+                    (bool isValid, string errorMessage) = ValidateOrderDate(value, shipmentDate);
+                    if(isValid)
                     {
-                        throw new InvalidOperationException(datesValidationresult.message);
+                        if(orderDate != value)
+                        {
+                            orderDate = value;
+                        } 
                     }
-                    orderDate = value;
+                    else
+                    {
+                        throw new ArgumentException(errorMessage, nameof(OrderDate));
+                    }
+                }
+                else
+                {
+                    if(orderDate != value)
+                    {
+                        orderDate = value;
+                    }
                 }
             }
         }
 
-        public DateTime ShipmentDate
+        public virtual DateTime ShipmentDate
         {
             get
             {
                 return shipmentDate;
             }
-
             set
             {
-                if(orderDate != default)
+                if(shipmentDate != default)
                 {
-                    (bool datesAreValid, string message) datesValidationresult = ValidateDates(orderDate, shipmentDate);
-                    if(!datesValidationresult.datesAreValid)
+                    (bool isValid, string errorMessage) = ValidateShipmentDate(value, orderDate);
+                    if(isValid)
                     {
-                        throw new InvalidOperationException(datesValidationresult.message);
+                        if(shipmentDate != value)
+                        {
+                            shipmentDate = value;
+                        }
                     }
-                    shipmentDate = value;
+                    else
+                    {
+                        throw new ArgumentException(errorMessage, nameof(OrderDate));
+                    }
                 }
+                else
+                {
+                    if(shipmentDate != value)
+                    {
+                        shipmentDate = value;
+                    }
+                }
+            }
+        }
+
+        public static (bool, string) ValidateOrderDate(DateTime orderDate, DateTime shipmentDate)
+        {
+            if(orderDate < shipmentDate)
+            {
+                return (false, "The order cannot be after the shipment date");
+            }
+            else
+            {
+                return (true, string.Empty);
+            }
+        }
+
+
+        public static (bool, string) ValidateShipmentDate(DateTime shipmentDate, DateTime orderDate)
+        {
+            if(shipmentDate < orderDate)
+            {
+                return (false, "The order cannot be after the shipment date");
+            }
+            else
+            {
+                return (true, string.Empty);
             }
         }
 
@@ -81,7 +131,7 @@ namespace S2.MegaCorp.Entities
         {
             if(shipmentDate > orderDate)
             {
-                return (true, String.Empty);
+                return (true, string.Empty);
             }
             else
             {

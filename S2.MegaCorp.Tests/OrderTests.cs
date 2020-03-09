@@ -12,7 +12,7 @@ namespace S2.MegaCorp.Tests
             // Arrange:
             int id = 1;
             DateTime orderDate = new DateTime(2020, 03, 09);
-            DateTime shipmentDate = orderDate.AddDays(1);
+            DateTime shipmentDate = orderDate.AddDays(5);
             Order order;
 
             // Act:
@@ -44,6 +44,7 @@ namespace S2.MegaCorp.Tests
             DateTime orderDate = new DateTime(2020, 03, 09);
             DateTime shipmentDate = orderDate.AddDays(1);
             Order order = new Order(id, orderDate, shipmentDate);
+
             DateTime newShipmentDate = shipmentDate.AddDays(1);
 
             // Act:
