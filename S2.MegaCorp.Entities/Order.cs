@@ -87,7 +87,7 @@ namespace S2.MegaCorp.Entities
             {
                 if(shipmentDate != default)
                 {
-                    (bool isValid, string errorMessage) = ValidateShipmentDate(value, orderDate);
+                    (bool isValid, string errorMessage) = ValidateDates(orderDate, value);
                     if(isValid)
                     {
                         if(shipmentDate != value)
@@ -125,18 +125,6 @@ namespace S2.MegaCorp.Entities
         public static (bool, string) ValidateOrderDate(DateTime orderDate, DateTime shipmentDate)
         {
             if(orderDate < shipmentDate)
-            {
-                return (false, "The order cannot be after the shipment date");
-            }
-            else
-            {
-                return (true, string.Empty);
-            }
-        }
-
-        public static (bool, string) ValidateShipmentDate(DateTime shipmentDate, DateTime orderDate)
-        {
-            if(shipmentDate < orderDate)
             {
                 return (false, "The order cannot be after the shipment date");
             }

@@ -53,5 +53,24 @@ namespace S2.MegaCorp.Tests
             // Assert:
             Assert.True(order.OrderDate < order.ShipmentDate);
         }
+
+        [Fact]
+        public void OrderMutatesToInvalidState()
+        {
+            // Arrange:
+            int id = 1;
+            DateTime orderDate = new DateTime(2020, 03, 09);
+            DateTime shipmentDate = orderDate.AddDays(1);
+            Order order = new Order(id, orderDate, shipmentDate);
+
+            DateTime newShipmentDate = shipmentDate.AddDays(-10);
+
+            // Actsert:
+            Assert.Throws<ArgumentException>(
+                () => order.ShipmentDate = newShipmentDate);
+
+            // Assert:
+            Assert.False(order.OrderDate > order.ShipmentDate);
+        }
     }
 }
