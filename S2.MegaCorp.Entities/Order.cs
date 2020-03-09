@@ -29,9 +29,17 @@ namespace S2.MegaCorp.Entities
             }
             set
             {
-                if(id != value)
+                (bool isValid, string errorMessage) = ValidateId(value);
+                if(isValid)
                 {
-                    id = value;
+                    if(id != value)
+                    {
+                        id = value;
+                    } 
+                }
+                else
+                {
+                    throw new ArgumentException(errorMessage, nameof(Id));
                 }
             }
         }
@@ -52,7 +60,7 @@ namespace S2.MegaCorp.Entities
                         if(orderDate != value)
                         {
                             orderDate = value;
-                        } 
+                        }
                     }
                     else
                     {
@@ -102,6 +110,18 @@ namespace S2.MegaCorp.Entities
             }
         }
 
+        public static (bool, string) ValidateId(int id)
+        {
+            if(id < 0)
+            {
+                return (false, "The value cannot be lower than 0");
+            }
+            else
+            {
+                return (true, string.Empty);
+            }
+        }
+
         public static (bool, string) ValidateOrderDate(DateTime orderDate, DateTime shipmentDate)
         {
             if(orderDate < shipmentDate)
@@ -113,7 +133,6 @@ namespace S2.MegaCorp.Entities
                 return (true, string.Empty);
             }
         }
-
 
         public static (bool, string) ValidateShipmentDate(DateTime shipmentDate, DateTime orderDate)
         {
